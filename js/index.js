@@ -4,6 +4,10 @@ let carrouselLinks = ["quick1", "quick2", "quick3"];
 let carrousel = document.getElementById("carCont");
 let views = carrousel.querySelectorAll(".carousel-item");
 
+let recentPublications = document.getElementById("recentPublications");
+
+let articles = document.querySelectorAll('article');
+
 let actArticles = document
   .getElementById(sections[0])
   .querySelectorAll(".blog-post");
@@ -24,28 +28,29 @@ function init() {
 function fillRecentArticles() {
   const articles = document.querySelectorAll("article");
 
-  const recentPublications = document.getElementById("recentPublications");
   const ul = recentPublications.querySelector("ul");
 
   const maxArticles = Math.min(articles.length, 10);
 
+
   for (let i = 0; i < maxArticles; i++) {
     const article = articles[i];
+    const id = article.getAttribute('id');
     const title = article.querySelector(".header").textContent;
     const date = article.querySelector(".date").textContent;
     const imageSrc = article.querySelector("img").getAttribute("src");
-
     const li = document.createElement("li");
+    
     li.innerHTML = `
-            <a class="d-flex flex-column flex-lg-row gap-3 align-items-start align-items-lg-center py-3 link-body-emphasis text-decoration-none border-top" href="#">
-                <img class="bd-placeholder-img" src="${imageSrc}" alt="Artículo">
+            <a class="d-flex flex-column flex-lg-row gap-3 align-items-start align-items-lg-center py-3 link-body-emphasis text-decoration-none border-top" 
+            href="#${id}">
+                <img class="bd-placeholder-img" src="${imageSrc}" style="width: 200px; height: 200px;" alt="Artículo">
                 <div class="col-lg-8">
                     <h6 class="mb-0">${title}</h6>
                     <small class="text-body-secondary">${date}</small>
                 </div>
             </a>
         `;
-
     ul.appendChild(li);
   }
 }
@@ -95,16 +100,40 @@ function randomArt(artSection) {
 }
 
 function characterLimiter(text) {
-  if (text.length > 160) {
-    return text.substring(0, 160) + " ...";
+  if (text.length > 100) {
+    return text.substring(0, 100) + " ...";
   }
   return text;
 }
 
+function knowSectionFromId(id){
+  console.log(id);
+  if(id.includes('act')){
+    return 'act';
+  }else if(id.includes('ud')){
+    return 'ud';
+  }else if(id.includes('man')){
+    return 'man';
+  }
+}
+
+//Event listener
 for (let i = 0; i < carrouselLinks.length; i++) {
   document
     .getElementById(carrouselLinks[i])
     .addEventListener("click", function (event) {
       displaySection(sections[i]);
     });
+}
+
+let recentArticles = recentPublications.querySelectorAll("li");
+let maxItems = Math.min(10, recentArticles.length);
+console.log('number of items: ' + maxItems)
+
+for (let i = 0; i < maxItems; i++) {
+  recentArticles[i].addEventListener("click", function (event) {
+    let listElement = recentPublications.querySelectorAll('li');
+    listElement[i].querySelector('a').setAttribute('href', articles[i].getAttribute('id'));
+    displaySection(knowSectionFromId(recentArticles[i].getAttribute('href')));
+  })
 }
