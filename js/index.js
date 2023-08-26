@@ -23,15 +23,12 @@ function init() {
   document.getElementById("man").style.display = "none";
   fillCarrousel();
   fillRecentArticles();
+  makeResponsive();
 }
 
 function fillRecentArticles() {
-  const articles = document.querySelectorAll("article");
-
   const ul = recentPublications.querySelector("ul");
-
   const maxArticles = Math.min(articles.length, 10);
-
 
   for (let i = 0; i < maxArticles; i++) {
     const article = articles[i];
@@ -107,7 +104,6 @@ function characterLimiter(text) {
 }
 
 function knowSectionFromId(id){
-  console.log(id);
   if(id.includes('act')){
     return 'act';
   }else if(id.includes('ud')){
@@ -117,23 +113,24 @@ function knowSectionFromId(id){
   }
 }
 
-//Event listener
-for (let i = 0; i < carrouselLinks.length; i++) {
-  document
-    .getElementById(carrouselLinks[i])
-    .addEventListener("click", function (event) {
-      displaySection(sections[i]);
-    });
-}
 
-let recentArticles = recentPublications.querySelectorAll("li");
-let maxItems = Math.min(10, recentArticles.length);
-console.log('number of items: ' + maxItems)
+function makeResponsive(){
+  let recentArticles = recentPublications.querySelectorAll("li");
+  let maxItems = Math.min(10, articles.length);
 
-for (let i = 0; i < maxItems; i++) {
-  recentArticles[i].addEventListener("click", function (event) {
-    let listElement = recentPublications.querySelectorAll('li');
-    listElement[i].querySelector('a').setAttribute('href', articles[i].getAttribute('id'));
-    displaySection(knowSectionFromId(recentArticles[i].getAttribute('href')));
-  })
+  for (let i = 0; i < carrouselLinks.length; i++) {
+    document
+      .getElementById(carrouselLinks[i])
+      .addEventListener("click", function (event) {
+        displaySection(sections[i]);
+      });
+  }
+
+  for (let i = 0; i < maxItems; i++) {
+    recentArticles[i].addEventListener("click", function (event) {
+      // recentArticles[i].querySelector('a').setAttribute('href', '#' + articles[i].id);
+      console.log(knowSectionFromId(articles[i].id));
+      displaySection(knowSectionFromId(articles[i].id));
+    })
+  }
 }
