@@ -6,7 +6,7 @@ let views = carrousel.querySelectorAll(".carousel-item");
 
 let recentPublications = document.getElementById("recentPublications");
 
-let articles = document.querySelectorAll('article');
+let articles = Array.from(document.querySelectorAll('article'));
 
 let actArticles = document
   .getElementById(sections[0])
@@ -21,30 +21,43 @@ let manArticles = document
 function init() {
   document.getElementById("ud").style.display = "none";
   document.getElementById("man").style.display = "none";
+
   fillCarrousel();
   fillRecentArticles();
   makeResponsive();
 }
 
+function spanishDate(date) {
+  const meses = ['enero', 'febrero', 'marzo', 'abril', 'mayo', 'junio', 'julio', 'agosto', 'septiembre', 'octubre', 'noviembre', 'diciembre'];
+  const dias_semana = ['Domingo', 'Lunes', 'martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'];
+  return dias_semana[date.getDay()] + ', ' + date.getDate() + ' de ' + meses[date.getMonth()] + ' de ' + date.getUTCFullYear();
+}
+
 function fillRecentArticles() {
   const ul = recentPublications.querySelector("ul");
   const maxArticles = Math.min(articles.length, 10);
+  articles.sort(function (a, b) {
+    var ordenA = new Date(a.getAttribute("date"));
+    var ordenB = new Date(b.getAttribute("date"));
+    return ordenA - ordenB;
+  });
 
   for (let i = 0; i < maxArticles; i++) {
     const article = articles[i];
     const id = article.getAttribute('id');
     const title = article.querySelector(".header").textContent;
-    const date = article.querySelector(".date").textContent;
+    const date = new Date(article.getAttribute("date"));
     const imageSrc = article.querySelector("img").getAttribute("src");
     const li = document.createElement("li");
-    
+    let esDate = spanishDate(date)
+
     li.innerHTML = `
             <a class="d-flex flex-column flex-lg-row gap-3 align-items-start align-items-lg-center py-3 link-body-emphasis text-decoration-none border-top" 
             href="#${id}">
-                <img class="bd-placeholder-img" src="${imageSrc}" style="width: 200px; height: 200px;" alt="Artículo">
+                <img class="bd-placeholder-img" src="${imageSrc}" style="width: 150px; height: 150px;" alt="Artículo">
                 <div class="col-lg-8">
                     <h6 class="mb-0">${title}</h6>
-                    <small class="text-body-secondary">${date}</small>
+                    <small class="text-body-secondary">${esDate}</small>
                 </div>
             </a>
         `;
@@ -103,18 +116,18 @@ function characterLimiter(text) {
   return text;
 }
 
-function knowSectionFromId(id){
-  if(id.includes('act')){
+function knowSectionFromId(id) {
+  if (id.includes('act')) {
     return 'act';
-  }else if(id.includes('ud')){
+  } else if (id.includes('ud')) {
     return 'ud';
-  }else if(id.includes('man')){
+  } else if (id.includes('man')) {
     return 'man';
   }
 }
 
 
-function makeResponsive(){
+function makeResponsive() {
   let recentArticles = recentPublications.querySelectorAll("li");
   let maxItems = Math.min(10, articles.length);
 
@@ -128,7 +141,6 @@ function makeResponsive(){
 
   for (let i = 0; i < maxItems; i++) {
     recentArticles[i].addEventListener("click", function (event) {
-      // recentArticles[i].querySelector('a').setAttribute('href', '#' + articles[i].id);
       console.log(knowSectionFromId(articles[i].id));
       displaySection(knowSectionFromId(articles[i].id));
     })
