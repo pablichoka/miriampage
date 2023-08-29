@@ -25,6 +25,7 @@ function init() {
   fillCarrousel();
   fillRecentArticles();
   makeResponsive();
+  responsiveImg()
 }
 
 function spanishDate(date) {
@@ -145,4 +146,26 @@ function makeResponsive() {
       displaySection(knowSectionFromId(articles[i].id));
     })
   }
+}
+
+function responsiveImg(){
+  const zoomableImages = document.querySelectorAll(".zoomable");
+  const overlay = document.createElement("div");
+  overlay.classList.add("overlay");
+
+  zoomableImages.forEach(image => {
+      image.addEventListener("click", () => {
+          const zoomedImage = document.createElement("img");
+          zoomedImage.src = image.src;
+          zoomedImage.classList.add("zoomed-image");
+          overlay.innerHTML = "";
+          overlay.appendChild(zoomedImage);
+          document.body.appendChild(overlay);
+          overlay.classList.add("active");
+
+          overlay.addEventListener("click", () => {
+              overlay.classList.remove("active");
+          });
+      });
+  });
 }
