@@ -135,14 +135,13 @@ function makeResponsive() {
   for (let i = 0; i < carrouselLinks.length; i++) {
     document
       .getElementById(carrouselLinks[i])
-      .addEventListener("click", function (event) {
+      .addEventListener("click", function () {
         displaySection(sections[i]);
       });
   }
 
   for (let i = 0; i < maxItems; i++) {
-    recentArticles[i].addEventListener("click", function (event) {
-      console.log(knowSectionFromId(articles[i].id));
+    recentArticles[i].addEventListener("click", function () {
       displaySection(knowSectionFromId(articles[i].id));
     })
   }
